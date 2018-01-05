@@ -9,6 +9,13 @@
 #include <boost/scoped_ptr.hpp>
 #include <threemxl/platform/hardware/dynamixel/3mxl/3mxlControlTable.h>
 
+/**
+ * Most important doc:
+ * http://docs.ros.org/indigo/api/threemxl/html/classC3mxl.html
+ * This page states all the methods of the C3mxl class.
+ * In this file, the C3mxl instance is called 'motor'
+ */
+
 #define CONNECTION_FTDI 0
 #define CONNECTION_SERIAL 1
 #define CONNECTION_MODE CONNECTION_SERIAL
@@ -28,7 +35,7 @@ bool openPort(LxSerial *serial_port) {
     LxSerial *serial_port = new LxSerial();
 
     is_open serial_port->port_open("/dev/ttyUSB0", LxSerial::RS485_FTDI);
-    serial_port->set_speed(LxSerial::S921600);
+    serial_port->set_speed(LxSerial::S500000);
 #endif
 
     return is_open;
@@ -56,19 +63,19 @@ int main(int argc, char **argv) {
 
     // ID 108 for testing motor
     motor->setConfig(config->setID(108));
-    
+
     // Initialise class and don't (?) send configuration
     motor->init(false);
 
     // Standard ROS loop
     ros::Rate loop_rate(10);
-    // Null motor position
-    // TODO see if this actually moves the motor or just sets the current position as 0
+    // Set motor position reference to 0. Function also accepts speed.
     motor->setPos(0);
+
     do {
         loop_rate.sleep();
-        // getPos() function does not actually return the position according to the docs
-        // presentPos() does, however.
+        // getPos() function gets retrieves the position but does not return it according to the docs
+        // presentPos() returnes this cached value.
         motor->getPos();
     } while (ros::ok() && fabs(motor->presentPos()) > 0.01);
 }

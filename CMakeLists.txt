@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 2.8.3)
 project(barrie_transport)
 set(NODE_NAME ${PROJECT_NAME}_node)
 
+include_directories(~/catkin_ws/src/threemxl/dbl)
+include_directories(~/catkin_ws/src/threemxl/include/threemxl)
+
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
 
